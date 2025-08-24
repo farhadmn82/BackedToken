@@ -13,6 +13,15 @@ const config: HardhatUserConfig = {
     target: {
       url: process.env.TARGET_RPC_URL || "",
     },
+    bsc: {
+      url: process.env.BSC_RPC_URL || "https://bsc-dataseed.binance.org",
+      chainId: 56,
+    },
+    bscTestnet: {
+      url:
+        process.env.BSC_TESTNET_RPC_URL || "https://bsc-testnet-rpc.publicnode.com",
+      chainId: 97,
+    },
   },
 };
 
