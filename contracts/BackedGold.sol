@@ -25,7 +25,7 @@ contract BackedGold is ERC20, Ownable {
 
     RedemptionRequest[] public redemptionQueue;
 
-    constructor(address stablecoin) ERC20("Backed Gold", "BGLD") {
+    constructor(address stablecoin) ERC20("Backed Gold", "BGOLD") {
         stable = IERC20(stablecoin);
     }
 
