@@ -13,7 +13,7 @@ interface IBridge {
     function send(address token, uint256 amount, bytes calldata message) external;
 }
 
-contract Representative is ERC20, Ownable {
+contract BackedGold is ERC20, Ownable {
     IERC20 public immutable stable;
     address public oracle;
     address public bridge;
@@ -25,7 +25,7 @@ contract Representative is ERC20, Ownable {
 
     RedemptionRequest[] public redemptionQueue;
 
-    constructor(address stablecoin) ERC20("Representative Token", "REP") {
+    constructor(address stablecoin) ERC20("Backed Gold", "BGLD") {
         stable = IERC20(stablecoin);
     }
 
@@ -38,12 +38,12 @@ contract Representative is ERC20, Ownable {
     }
 
     function buy(uint256 stableAmount) external {
-        require(oracle != address(0) && bridge != address(0), "Representative: not wired");
-        require(stableAmount > 0, "Representative: amount zero");
+        require(oracle != address(0) && bridge != address(0), "BackedGold: not wired");
+        require(stableAmount > 0, "BackedGold: amount zero");
 
-        require(stable.transferFrom(msg.sender, address(this), stableAmount), "Representative: transfer failed");
+        require(stable.transferFrom(msg.sender, address(this), stableAmount), "BackedGold: transfer failed");
         uint256 price = IOracle(oracle).getPrice();
-        require(price > 0, "Representative: price zero");
+        require(price > 0, "BackedGold: price zero");
         uint256 tokensToMint = stableAmount * 1e18 / price;
 
         _mint(msg.sender, tokensToMint);
@@ -53,8 +53,8 @@ contract Representative is ERC20, Ownable {
     }
 
     function redeem(uint256 tokenAmount) external {
-        require(oracle != address(0) && bridge != address(0), "Representative: not wired");
-        require(tokenAmount > 0, "Representative: amount zero");
+        require(oracle != address(0) && bridge != address(0), "BackedGold: not wired");
+        require(tokenAmount > 0, "BackedGold: amount zero");
 
         _burn(msg.sender, tokenAmount);
 
