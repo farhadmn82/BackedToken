@@ -11,24 +11,27 @@ describe("BackedGold", function () {
     const stable = await Stable.deploy();
 
     const Oracle = await ethers.getContractFactory("StubOracle");
-    const price = ethers.parseEther("1");
+    const price = ethers.parseEther("3400");
     const oracle = await Oracle.deploy(price);
 
     const Bridge = await ethers.getContractFactory("StubBridge");
     const bridge = await Bridge.deploy();
 
     const goldFactory = await ethers.getContractFactory("BackedGold");
-    const gold = await goldFactory.deploy(await stable.getAddress());
-    await gold.setOracle(await oracle.getAddress());
-    await gold.setBridge(await bridge.getAddress());
+    const oracleAddress = await oracle.getAddress();
+    const bridgeAddress = await bridge.getAddress();
+    const stableAddress = await stable.getAddress();
+    const gold = await goldFactory.deploy(stableAddress, ["Backed Gold", "BGOLD", user.address]);
+    await gold.setOracle(oracleAddress);
+    await gold.setBridge(bridgeAddress);
 
     await stable.mint(user.address, ethers.parseEther("100"));
 
-    return { gold, stable, oracle, bridge, owner, user, price };
+    return { gold, stable, bridge, user, owner, price };
   }
 
   it("mints tokens and emits bridge message on buy", async function () {
-    const { gold, stable, bridge, user, price } = await deploy();
+    const { gold, stable, bridge, user, owner, price } = await deploy();
     const buyAmount = ethers.parseEther("10");
 
     await stable.connect(user).approve(await gold.getAddress(), buyAmount);
@@ -45,7 +48,7 @@ describe("BackedGold", function () {
   });
 
   it("burns tokens, queues redeem and emits bridge message", async function () {
-    const { gold, stable, bridge, user, price } = await deploy();
+    const { gold, stable, bridge, user, owner, price } = await deploy();
     const buyAmount = ethers.parseEther("10");
     await stable.connect(user).approve(await gold.getAddress(), buyAmount);
     await gold.connect(user).buy(buyAmount);
@@ -65,7 +68,7 @@ describe("BackedGold", function () {
   });
 
   it("returns deployer as owner via getOwner", async function () {
-    const { gold, owner } = await deploy();
+    const { gold, stable, bridge, user, owner, price } = await deploy();
     expect(await gold.getOwner()).to.equal(owner.address);
   });
 });

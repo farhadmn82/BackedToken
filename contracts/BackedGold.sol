@@ -15,6 +15,7 @@ interface IBridge {
 
 contract BackedGold is ERC20, Ownable {
     IERC20 public immutable stable;
+    address public owner1;
     address public oracle;
     address public bridge;
 
@@ -25,7 +26,7 @@ contract BackedGold is ERC20, Ownable {
 
     RedemptionRequest[] public redemptionQueue;
 
-    constructor(address stablecoin) ERC20("Backed Gold", "BGOLD") {
+    constructor(address stablecoin) ERC20("Backed Gold", "BGOLD") Ownable(msg.sender) {
         stable = IERC20(stablecoin);
     }
 
