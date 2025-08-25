@@ -7,11 +7,13 @@ dotenv.config();
 const config: HardhatUserConfig = {
   solidity: "0.8.24",
   networks: {
-    source: {
-      url: process.env.SOURCE_RPC_URL || "",
+    bsc: {
+      url: process.env.BSC_RPC_URL || "",
+      chainId: 56,
     },
-    target: {
-      url: process.env.TARGET_RPC_URL || "",
+    bscTestnet: {
+      url: process.env.BSC_TESTNET_RPC_URL || "",
+      chainId: 97,
     },
     bsc: {
       url: process.env.BSC_RPC_URL || "https://bsc-dataseed.binance.org",
